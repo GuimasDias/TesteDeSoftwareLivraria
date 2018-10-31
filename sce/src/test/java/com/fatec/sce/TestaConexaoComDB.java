@@ -2,8 +2,11 @@ package com.fatec.sce;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
+
 import com.fatec.sce.model.ConfiguraDB;
 import com.fatec.sce.model.FabricaDeConexoes;
+
+
 
 public class TestaConexaoComDB {
 	/**
@@ -28,7 +31,7 @@ public class TestaConexaoComDB {
 	@Test
 	public void quandoConectaComSenhaInvalida_SQLException() {
 		// cenario
-		String url = "jdbc:mysql://localhost:3306/biblioteca";
+		String url = "jdbc:mysql://localhost:3306/biblioteca?useSSL=false";
 		String driver = "com.mysql.jdbc.Driver";
 		String usuario = "root";
 		String senha = "aaaa"; // senha errada
@@ -53,7 +56,7 @@ public class TestaConexaoComDB {
 	@Test
 	public void quandoConectaComUsuarioInvalido_SQLException() {
 		// cenario
-		String url = "jdbc:mysql://localhost:3306/biblioteca";
+		String url = "jdbc:mysql://localhost:3306/biblioteca?useSSL=false";
 		String driver = "com.mysql.jdbc.Driver";
 		String usuario = "root1";
 		String senha = "a"; // senha errada
@@ -78,7 +81,7 @@ public class TestaConexaoComDB {
 	@Test
 	public void quandoConectaComDriverInvalido_SQLException() {
 		// cenario
-		String url = "jdbc:mysql://localhost:3306/biblioteca";
+		String url = "jdbc:mysql://localhost:3306/biblioteca?useSSL=false";
 		String driver = "com.mysql.jdbc.Driver1";
 		String usuario = "root";
 		String senha = "alunofatec"; 
@@ -103,10 +106,10 @@ public class TestaConexaoComDB {
 	@Test
 	public void quandoConectaComURLInvalida_SQLException() {
 		// cenario
-		String url = "jdbc:mysql://localhost:3307/biblioteca";
+		String url = "jdbc1:mysql://localhost:3306/biblioteca?useSSL=false";
 		String driver = "com.mysql.jdbc.Driver";
 		String usuario = "root";
-		String senha = "alunofatec"; // senha errada
+		String senha = ""; 
 		FabricaDeConexoes fabricaDeConexoes = null;
 		ConfiguraDB configuraDB = new ConfiguraDB(url, driver, usuario, senha);
 		fabricaDeConexoes = new FabricaDeConexoes(configuraDB);
@@ -116,25 +119,10 @@ public class TestaConexaoComDB {
 			fail("deveria falhar");
 		} catch (Exception e) {
 			// verificacao
-			System.out.println(e.getMessage());
-			assertEquals(e.getMessage(),
-					"com.mysql.jdbc.exceptions.jdbc4.CommunicationsException: Communications link failure\n" + 
-					"\nThe last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.");
+			//System.out.println("erro a ser reportado no assert ====>" + e.getMessage());
+			assertEquals("java.sql.SQLException: No suitable driver found for jdbc1:mysql://localhost:3306/biblioteca?useSSL=false",
+					e.getMessage());
 		}
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
 		
 		
 		
