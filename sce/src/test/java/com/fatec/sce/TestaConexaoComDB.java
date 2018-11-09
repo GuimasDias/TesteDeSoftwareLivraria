@@ -5,8 +5,7 @@ import org.junit.Test;
 
 import com.fatec.sce.model.ConfiguraDB;
 import com.fatec.sce.model.FabricaDeConexoes;
-
-
+import com.mysql.jdbc.Connection;
 
 public class TestaConexaoComDB {
 	/**
@@ -17,11 +16,15 @@ public class TestaConexaoComDB {
 	@Test
 	public void quandoConectaComOBancoRetornaOK() {
 		// cenario
-		FabricaDeConexoes fabrica;
-		// acao
-		fabrica = new FabricaDeConexoes();
-		// verificacao
-		assertNotNull(fabrica.getConnection());
+		Connection c = null;
+		try {
+			// acao
+			c = new FabricaDeConexoes().getConnection();
+			// verificacao
+			assertNotNull(c);
+		} catch (Exception e) {
+			fail("nao deveria falhar");
+		}
 	}
 
 	/**
@@ -45,13 +48,14 @@ public class TestaConexaoComDB {
 		} catch (Exception e) {
 			// verificacao
 			System.out.println(e.getMessage());
-			assertEquals(e.getMessage(),
-					"java.sql.SQLException: Access denied for user 'root'@'localhost' (using password: YES)");
+			assertEquals("java.sql.SQLException: Access denied for user 'root'@'localhost' (using password: YES)",
+					e.getMessage());
 		}
 	}
+
 	/**
-	 * Objetivo - verificar o comportamento do sistema na conexao ao DB com usuario invalido
-	 * Pré-condição - o usuario valido e root
+	 * Objetivo - verificar o comportamento do sistema na conexao ao DB com usuario
+	 * invalido Pré-condição - o usuario valido e root
 	 */
 	@Test
 	public void quandoConectaComUsuarioInvalido_SQLException() {
@@ -74,9 +78,10 @@ public class TestaConexaoComDB {
 					"java.sql.SQLException: Access denied for user 'root1'@'localhost' (using password: YES)");
 		}
 	}
+
 	/**
-	 * Objetivo - verificar o comportamento do sistema na conexao ao DB com usuario invalido
-	 * Pré-condição - o usuario valido e root
+	 * Objetivo - verificar o comportamento do sistema na conexao ao DB com usuario
+	 * invalido Pré-condição - o usuario valido e root
 	 */
 	@Test
 	public void quandoConectaComDriverInvalido_SQLException() {
@@ -84,7 +89,7 @@ public class TestaConexaoComDB {
 		String url = "jdbc:mysql://localhost:3306/biblioteca?useSSL=false";
 		String driver = "com.mysql.jdbc.Driver1";
 		String usuario = "root";
-		String senha = "alunofatec"; 
+		String senha = "alunofatec";
 		FabricaDeConexoes fabricaDeConexoes = null;
 		ConfiguraDB configuraDB = new ConfiguraDB(url, driver, usuario, senha);
 		fabricaDeConexoes = new FabricaDeConexoes(configuraDB);
@@ -95,13 +100,13 @@ public class TestaConexaoComDB {
 		} catch (Exception e) {
 			// verificacao
 			System.out.println(e.getMessage());
-			assertEquals(e.getMessage(),
-					"java.lang.ClassNotFoundException: com.mysql.jdbc.Driver1");
+			assertEquals(e.getMessage(), "java.lang.ClassNotFoundException: com.mysql.jdbc.Driver1");
 		}
 	}
+
 	/**
-	 * Objetivo - verificar o comportamento do sistema na conexao ao DB com url invalida
-	 * Pré-condição - a porta de acesso e 3306
+	 * Objetivo - verificar o comportamento do sistema na conexao ao DB com url
+	 * invalida Pré-condição - a porta de acesso e 3306
 	 */
 	@Test
 	public void quandoConectaComURLInvalida_SQLException() {
@@ -109,7 +114,7 @@ public class TestaConexaoComDB {
 		String url = "jdbc1:mysql://localhost:3306/biblioteca?useSSL=false";
 		String driver = "com.mysql.jdbc.Driver";
 		String usuario = "root";
-		String senha = ""; 
+		String senha = "";
 		FabricaDeConexoes fabricaDeConexoes = null;
 		ConfiguraDB configuraDB = new ConfiguraDB(url, driver, usuario, senha);
 		fabricaDeConexoes = new FabricaDeConexoes(configuraDB);
@@ -119,12 +124,11 @@ public class TestaConexaoComDB {
 			fail("deveria falhar");
 		} catch (Exception e) {
 			// verificacao
-			//System.out.println("erro a ser reportado no assert ====>" + e.getMessage());
-			assertEquals("java.sql.SQLException: No suitable driver found for jdbc1:mysql://localhost:3306/biblioteca?useSSL=false",
+			// System.out.println("erro a ser reportado no assert ====>" + e.getMessage());
+			assertEquals(
+					"java.sql.SQLException: No suitable driver found for jdbc1:mysql://localhost:3306/biblioteca?useSSL=false",
 					e.getMessage());
 		}
-		
-		
-		
+
 	}
 }
